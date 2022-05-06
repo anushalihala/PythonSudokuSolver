@@ -1,5 +1,8 @@
 import unittest
+
+import sudoku_solver_exceptions
 from sudoku_solver_refactored import SudokuContext
+import sudoku_solver_exceptions
 
 # def square(n):
 #     return n * n
@@ -25,8 +28,8 @@ class TestSudokuContext(unittest.TestCase):
         self.assertEquals(sudoku_context_object.board_size, len(self.sudoku_boards[0]))
         sudoku_context_object_mini = SudokuContext("1234")
         self.assertEquals(sudoku_context_object_mini.board_size, 4)
-        sudoku_context_object_invalid = SudokuContext("1234", 5)
-        self.assertEquals(sudoku_context_object_invalid.board_size, 5)
+
+        self.assertRaises(sudoku_solver_exceptions.SudokuSolverException, SudokuContext, "1234", 5)
 
     # def test_sudoku_string_to_context(self):
     #     # generate answers

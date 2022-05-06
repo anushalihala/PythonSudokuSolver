@@ -1,4 +1,5 @@
 import math
+from sudoku_solver_exceptions import SudokuSolverException
 
 
 class SudokuContext:
@@ -12,7 +13,7 @@ class SudokuContext:
         self.neighbours = dict()  # CONSTRAINT; all neighbours must be different
 
         if len(sudoku_string) != self.board_size:
-            raise Exception(f"input Sudoku string length not equal to {self.board_size}")
+            raise SudokuSolverException(f"input Sudoku string length not equal to {self.board_size}")
 
     def __get_sudoku_indices(self, input_int):
         # converts linear indices [0-80] to 2d indices [0-8][0-8]
