@@ -18,7 +18,7 @@ class SudokuContext:
     def _get_sudoku_indices(self, input_int):
         # converts linear indices [0-80] to 2d indices [0-8][0-8]
         divisor = int(math.sqrt(self.board_size))
-        row = input_int / divisor
+        row = input_int // divisor
         col = input_int % divisor
         return str(row) + str(col)
 

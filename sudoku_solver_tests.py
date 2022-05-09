@@ -21,7 +21,6 @@ class TestSudokuContext(unittest.TestCase):
         self.solved_sudoku_boards = [
             "815627394924385761673491528186952473457163982239748615591236847342879156768514239"
         ]
-        self.sudoku_context_objects = None  # TODO
 
     def test_sudoku_size_validation(self):
         sudoku_context_object = SudokuContext(self.sudoku_boards[0])
@@ -31,13 +30,14 @@ class TestSudokuContext(unittest.TestCase):
 
         self.assertRaises(sudoku_solver_exceptions.SudokuSolverException, SudokuContext, "1234", 5)
 
-    # def test_sudoku_string_to_context(self):
-    #     # generate answers
-    #     sudoku_indices = []
-    #     for i in range(9):
-    #         for j in range(9):
-    #             sudoku_indices.append(str(i)+str(j))
+    def test_sudoku_string_to_context(self):
+        sudoku_context_object = SudokuContext(self.sudoku_boards[0])
+        # generate answers
+        sudoku_indices = []
+        for i in range(9):
+            for j in range(9):
+                sudoku_indices.append(str(i)+str(j))
 
-        # for index in range(len(sudoku_indices)):
-        #     self.assertEqual(SudokuContext(self.sudoku_boards, index), sudoku_indices[index])
+        for index in range(len(sudoku_indices)):
+            self.assertEqual(sudoku_context_object._get_sudoku_indices(index), sudoku_indices[index])
 
