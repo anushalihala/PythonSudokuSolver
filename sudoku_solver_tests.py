@@ -1,14 +1,7 @@
 import unittest
 
-import sudoku_solver_exceptions
 from sudoku_solver_refactored import SudokuContext
 import sudoku_solver_exceptions
-
-# def square(n):
-#     return n * n
-#
-# def cube(n):
-#     return n * n * n
 
 
 class TestSudokuContext(unittest.TestCase):
