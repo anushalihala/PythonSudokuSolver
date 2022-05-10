@@ -3,43 +3,25 @@ from sudoku_solver_exceptions import SudokuSolverException
 
 
 class SudokuContext:
-    def __init__(self, sudoku_string, sudoku_size=None):
-        if sudoku_size is None:
-            self.board_area = len(sudoku_string)
-        else:
-            self.board_area = sudoku_size
-
-        self.sudoku_string = sudoku_string
+    def __init__(self, sudoku_string, box_length=3):
+        self.box_length = box_length
+        self.original_sudoku_string = sudoku_string
+        self.board_area = len(self.original_sudoku_string)
         self.board_length = int(math.sqrt(self.board_area))
         self.current_board = dict()       # actual values in Sudoku board
         self.current_domain = dict()      # possible value each cell in Sudoku board can take
         self.neighbours = dict()  # CONSTRAINT; all neighbours must be different
 
-        if len(sudoku_string) != self.board_area:
-            raise SudokuSolverException(f"input Sudoku string length not equal to {self.board_area}")
-        elif self.board_length**2 != self.board_area:
+        if self.board_length**2 != self.board_area:
             raise SudokuSolverException("input Sudoku string length does not form a square")
+
+        self._sudoku_string_to_context()
 
     def _get_sudoku_indices(self, input_int):
         # converts linear indices [0-80] to 2d indices [r][c] with domain [0-8][0-8] of type string
         row = input_int // self.board_length
         col = input_int % self.board_length
         return str(row) + str(col)
-
-    def _sudoku_string_to_context(self, sudoku_string):
-        for i in range(self.board_area):
-            sudoku_indices = self._get_sudoku_indices(i)
-            cell_value = int(self.sudoku_string[i])
-            self.board[sudoku_indices] = cell_value
-
-            if cell_value == 0:
-                # initial domain -> if cell empty, can take any value from 1 to 9
-                self.domain[sudoku_indices] = set(range(1, 10))
-            else:
-                # initial domain -> if cell filled, can take only that value
-                self.domain[sudoku_indices] = set([cell_value])
-
-            self.neighbours[sudoku_indices] = self.compute_neighbours(sudoku_indices)
 
     def _get_linear_neighbours(self, const_index, const_row_or_col):
         const_list = [const_index] * self.board_length
@@ -68,11 +50,11 @@ class SudokuContext:
         row_index = sudoku_indices[0]
         return self._get_linear_neighbours(row_index, 'row')
 
-    def _get_box_neighbours(self, sudoku_indices, box_length=3):
+    def _get_box_neighbours(self, sudoku_indices):
         row_index = sudoku_indices[0]
         column_index = sudoku_indices[1]
 
-        number_of_boxes = self.board_length / box_length
+        number_of_boxes = self.board_length / self.box_length
         # check if whole number
         if number_of_boxes - int(number_of_boxes) != 0:
             raise SudokuSolverException("self.board_length not divisible by box_length argument value")
@@ -82,17 +64,42 @@ class SudokuContext:
         vertical_box_number = int(vertical_box_number)
 
         neighbours_list = []
-        for row_index in range(box_length * vertical_box_number, box_length * vertical_box_number + box_length):
-            for col_index in range(box_length * horizontal_box_number, box_length * horizontal_box_number + box_length):
+        for row_index in range(self.box_length * vertical_box_number, self.box_length * vertical_box_number + self.box_length):
+            for col_index in range(self.box_length * horizontal_box_number, self.box_length * horizontal_box_number + self.box_length):
                 neighbours_list.append(str(row_index)+str(col_index))
 
         neighbours_list = list(filter(lambda x: x!=sudoku_indices, neighbours_list))
         return neighbours_list
 
-    def _get_neighbours(self, sudoku_indices, box_length=3):
-        return self._get_row_neighbours(sudoku_indices) + \
-               self._get_column_neighbours(sudoku_indices) + \
-               self._get_box_neighbours(sudoku_indices, box_length)
+    def _get_neighbours(self, sudoku_indices):
+        neighbours_list = self._get_row_neighbours(sudoku_indices) + \
+                        self._get_column_neighbours(sudoku_indices) + \
+                        self._get_box_neighbours(sudoku_indices)
+        neighbours_set = set(neighbours_list)
+        return neighbours_set
+
+    def _sudoku_string_to_context(self):
+        for i in range(self.board_area):
+            sudoku_indices = self._get_sudoku_indices(i)
+            cell_value = int(self.original_sudoku_string[i])
+            self.current_board[sudoku_indices] = cell_value
+
+            if cell_value == 0:
+                # initial domain -> if cell empty, can take any value from 1 to 9
+                self.current_domain[sudoku_indices] = set(range(1, 10))
+            else:
+                # initial domain -> if cell filled, can take only that value
+                self.current_domain[sudoku_indices] = set([cell_value])
+
+            self.neighbours[sudoku_indices] = self._get_neighbours(sudoku_indices)
+
+    def __repr__(self):
+        sudoku_list_representation = []
+        for i in range(self.board_area):
+            sudoku_indices = self._get_sudoku_indices(i)
+            sudoku_list_representation.append(self.current_board[sudoku_indices])
+        sudoku_string_representation = "".join(sudoku_list_representation)
+        return sudoku_string_representation
 
 
 if __name__=="__main__":
@@ -100,4 +107,7 @@ if __name__=="__main__":
     input_test = "010020300004005060070000008006900070000100002030048000500006040000800106008000000"
     # sc = SudokuContext(input_test)
 
-    sc = SudokuContext("0"*81)
+    sc = SudokuContext(input_test)
+    print(sc.current_board)
+    print(sc.current_domain)
+    print(sc.neighbours)
