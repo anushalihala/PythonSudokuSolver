@@ -98,8 +98,23 @@ class SudokuContext:
         for i in range(self.board_area):
             sudoku_indices = self._get_sudoku_indices(i)
             sudoku_list_representation.append(self.current_board[sudoku_indices])
+        sudoku_list_representation = map(lambda x: str(x), sudoku_list_representation)
         sudoku_string_representation = "".join(sudoku_list_representation)
         return sudoku_string_representation
+
+    def __str__(self):
+        sudoku_string_list = []
+        for i in range(self.board_area):
+            if i % self.board_length == 0:
+                sudoku_string_list.append("\n")
+            elif i % self.box_length == 0:
+                sudoku_string_list.append(" ")
+            sudoku_indices = self._get_sudoku_indices(i)
+            sudoku_string_list.append(str(self.current_board[sudoku_indices]))
+        return "".join(sudoku_string_list)
+        
+
+
 
 
 if __name__=="__main__":
