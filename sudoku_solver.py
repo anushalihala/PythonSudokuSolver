@@ -17,11 +17,15 @@ import pdb
 from collections import deque
 import heapq as hq
 
-def get_indx(decint):
-    #converts linear indices [0-80] to 2d indices [0-8][0-8]
-    row = decint/9
-    col = decint%9
-    return str(row)+str(col)
+def get_indx(input_int):
+    # converts linear indices [0-80] to 2d indices [0-8][0-8]
+    # row = decint/9
+    # col = decint%9
+    # return str(row)+str(col)
+    # converts linear indices [0-80] to 2d indices [r][c] with domain [0-8][0-8] of type string
+    row = input_int // 9
+    col = input_int % 9
+    return str(row) + str(col)
     
 class Sudoku_CSP:
     def __init__(self,sb_list):
@@ -67,24 +71,44 @@ class Sudoku_CSP:
             c_list.append(str(i)+idx[1])
         return c_list
         
-    def get_b_neighbours(self,idx):
-        r=int(idx[0])
-        c=int(idx[1])
-        b_list=[]
-        
-        #getting box's row values
-        row_vals=list(range(0,r%3))+list(range((r%3)+1,3))       #getting range
-        row_vals= map(lambda x: x+3*(r/3), row_vals) #translating
-        
-        #getting box's column values
-        col_vals=list(range(0,c%3))+list(range((c%3)+1,3))       #getting range
-        col_vals= map(lambda x: x+3*(c/3), col_vals) #translating
-        
-        #combining lists
-        for i in row_vals:
-            for j in col_vals:
-               b_list.append(str(i)+str(j))
-        return b_list
+    def get_b_neighbours(self, sudoku_indices):
+        # r=int(idx[0])
+        # c=int(idx[1])
+        # b_list=[]
+        #
+        # #getting box's row values
+        # row_vals=list(range(0,r%3))+list(range((r%3)+1,3))       #getting range
+        # row_vals= map(lambda x: x+3*(r/3), row_vals) #translating
+        #
+        # #getting box's column values
+        # col_vals=list(range(0,c%3))+list(range((c%3)+1,3))       #getting range
+        # col_vals= map(lambda x: x+3*(c/3), col_vals) #translating
+        #
+        # #combining lists
+        # for i in row_vals:
+        #     for j in col_vals:
+        #        b_list.append(str(i)+str(j))
+        # return b_list
+        #
+        row_index = sudoku_indices[0]
+        column_index = sudoku_indices[1]
+
+        number_of_boxes = 3
+        box_length = 3
+        horizontal_box_number = int(column_index) // number_of_boxes
+        horizontal_box_number = int(horizontal_box_number)
+        vertical_box_number = int(row_index) // number_of_boxes
+        vertical_box_number = int(vertical_box_number)
+
+        neighbours_list = []
+        for row_index in range(box_length * vertical_box_number,
+                               box_length * vertical_box_number + box_length):
+            for col_index in range(box_length * horizontal_box_number,
+                                   box_length * horizontal_box_number + box_length):
+                neighbours_list.append(str(row_index) + str(col_index))
+
+        neighbours_list = list(filter(lambda x: x != sudoku_indices, neighbours_list))
+        return neighbours_list
 
     def compute_neighbours(self,idx):   
         return self.get_r_neighbours(idx)+self.get_c_neighbours(idx)+self.get_b_neighbours(idx)
@@ -274,23 +298,28 @@ def main(slist):
     if '0' in assignment: #board not filled
         b=BTS(slist)
         assignment=b.Backtracking_Search()
-        return assignment + " BTS" 
-    else:    
+        return assignment + " BTS"
+    else:
         return assignment + " AC3"
 
 
 if __name__=="__main__":
     print("hello main!")
     #creating Sudoku board
-    input = "010020300004005060070000008006900070000100002030048000500006040000800106008000000"
+    input_list = [
+        "010020300004005060070000008006900070000100002030048000500006040000800106008000000",
+        "010020300002003040050000006004700050000100003070068000300004090000600104006000000",
+        "010020300002003040080000006004700030000600008070098000300004090000800104006000000"
+    ]
     # input = sys.argv[1]
+    for input in input_list:
+        slist=list(input)
+        result = main(slist)
+        print(result)
 
-    slist=list(input)
+    # ofh=open("output.txt",'w')
+    # ofh.write(result)
+    # ofh.close()
 
-    ofh=open("output.txt",'w')
-
-    result = main(slist)
-
-    ofh.write(result)
-
-    ofh.close()
+    # for i in range(80):
+    #     print(get_indx(i))
