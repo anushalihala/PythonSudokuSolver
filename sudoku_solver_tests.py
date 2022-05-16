@@ -271,3 +271,18 @@ class TestSudokuContext(unittest.TestCase):
          '88': {'48', '84', '85', '78', '77', '83', '80', '58', '76', '68', '81', '67', '18', '08', '38', '82', '86',
                 '87', '28', '66'}}
         self.assertEqual(sc.neighbours, current_neighbours_answer)
+
+
+class TestSudokuCSP(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sudoku_boards = [
+            "010020300004005060070000008006900070000100002030048000500006040000800106008000000"
+        ]
+        self.solved_sudoku_boards = [
+            "815627394924385761673491528186952473457163982239748615591236847342879156768514239"
+        ]
+
+    def test_get_binary_constraints(self):
+        # TODO
+        pass

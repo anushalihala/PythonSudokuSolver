@@ -117,7 +117,82 @@ class SudokuContext:
         return "".join(sudoku_string_list)
 
 
+class CSP:
+    def __init__(self):
+        super().__init__()
 
+    def revise_domain(self, domain):
+        """
+        revise_domains modifies domain argument in place
+        :param domain: dict() where value is a set() of items
+        :return: None
+        """
+        pass
+
+    def get_domain(self):
+        pass
+
+    def is_domain_empty(self):
+        pass
+
+    def get_binary_constraints(self):
+        pass
+
+    def is_goal(self):
+        pass
+
+    def is_game_over(self):
+        pass
+
+
+class SudokuCSP(CSP):
+    def __init__(self, sudoku_context):
+        self.sudoku_context = sudoku_context
+
+    def revise_domain(self, domain):
+        """
+        revise_domains modifies domain argument in place
+        :param domain: dict() where value is a set() of items
+        :return: None
+        """
+        pass
+
+    def get_domain(self):
+        pass
+
+    def is_domain_empty(self):
+        pass
+
+    def get_binary_constraints(self):
+        constraints_list = []
+        for i in range(self.sudoku_context.board_area):
+            sudoku_indices = self.sudoku_context.get_sudoku_indices(i)
+            for neighbour_indices in self.sudoku_context.get_current_neighbours(sudoku_indices):
+                arc = (sudoku_indices, neighbour_indices)
+                constraints_list.append(arc)
+        return constraints_list
+
+    def is_goal(self):
+        pass
+
+    def is_game_over(self):
+        pass
+
+
+
+class ArcConsistency:
+    def __init__(self, csp):
+        self.csp = csp
+
+    def _revise(self):
+        pass
+
+    def solve(self):
+        """
+        returns false if inconsistency found, true otherwise
+        :return: boolean
+        """
+        pass
 
 
 if __name__=="__main__":
@@ -126,6 +201,7 @@ if __name__=="__main__":
     # sc = SudokuContext(input_test)
 
     sc = SudokuContext(input_test)
-    print(sc.current_board)
-    print(sc.current_domain)
-    print(sc.neighbours)
+    scp = SudokuCSP(sc)
+    ans = scp.get_binary_constraints()
+    print(ans)
+    print(len(ans))
