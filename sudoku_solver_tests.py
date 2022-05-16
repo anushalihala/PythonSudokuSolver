@@ -32,7 +32,7 @@ class TestSudokuContext(unittest.TestCase):
                 sudoku_indices.append(str(i)+str(j))
 
         for index in range(len(sudoku_indices)):
-            self.assertEqual(sudoku_context_object._get_sudoku_indices(index), sudoku_indices[index])
+            self.assertEqual(sudoku_context_object.get_sudoku_indices(index), sudoku_indices[index])
 
     def test_get_neighbours_4(self):
         input_sudoku_string = "0"*16

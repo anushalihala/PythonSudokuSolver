@@ -17,7 +17,7 @@ class SudokuContext:
 
         self._sudoku_string_to_context()
 
-    def _get_sudoku_indices(self, input_int):
+    def get_sudoku_indices(self, input_int):
         # converts linear indices [0-80] to 2d indices [r][c] with domain [0-8][0-8] of type string
         row = input_int // self.board_length
         col = input_int % self.board_length
@@ -80,7 +80,7 @@ class SudokuContext:
 
     def _sudoku_string_to_context(self):
         for i in range(self.board_area):
-            sudoku_indices = self._get_sudoku_indices(i)
+            sudoku_indices = self.get_sudoku_indices(i)
             cell_value = int(self.original_sudoku_string[i])
             self.current_board[sudoku_indices] = cell_value
 
@@ -93,10 +93,13 @@ class SudokuContext:
 
             self.neighbours[sudoku_indices] = self._get_neighbours(sudoku_indices)
 
+    def get_current_neighbours(self, sudoku_indices):
+        return self.neighbours[sudoku_indices]
+
     def __repr__(self):
         sudoku_list_representation = []
         for i in range(self.board_area):
-            sudoku_indices = self._get_sudoku_indices(i)
+            sudoku_indices = self.get_sudoku_indices(i)
             sudoku_list_representation.append(self.current_board[sudoku_indices])
         sudoku_list_representation = map(lambda x: str(x), sudoku_list_representation)
         sudoku_string_representation = "".join(sudoku_list_representation)
@@ -109,10 +112,10 @@ class SudokuContext:
                 sudoku_string_list.append("\n")
             elif i % self.box_length == 0:
                 sudoku_string_list.append(" ")
-            sudoku_indices = self._get_sudoku_indices(i)
+            sudoku_indices = self.get_sudoku_indices(i)
             sudoku_string_list.append(str(self.current_board[sudoku_indices]))
         return "".join(sudoku_string_list)
-        
+
 
 
 
